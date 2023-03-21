@@ -1,0 +1,33 @@
+diff -Naru compiz-0.8.8-a/src/display.c compiz-0.8.8-b/src/display.c
+--- compiz-0.8.8-a/src/display.c	2010-09-29 16:39:49.000000000 +0400
++++ compiz-0.8.8-b/src/display.c	2020-05-10 21:40:03.135706319 +0300
+@@ -1528,7 +1528,7 @@
+ 				    COMP_SCREEN_DAMAGE_REGION_MASK;
+ 			    }
+ 			}
+-
++			s->damageMask |= COMP_SCREEN_DAMAGE_ALL_MASK;
+ 			if (s->damageMask & COMP_SCREEN_DAMAGE_REGION_MASK)
+ 			{
+ 			    XIntersectRegion (s->damage, &s->region,
+@@ -1569,6 +1569,7 @@
+ 
+ 			if (mask & COMP_SCREEN_DAMAGE_ALL_MASK)
+ 			{
++			    glFlush ();
+ 			    glXSwapBuffers (d->display, s->output);
+ 			}
+ 			else
+diff -Naru compiz-0.8.8-a/src/screen.c compiz-0.8.8-b/src/screen.c
+--- compiz-0.8.8-a/src/screen.c	2011-03-18 11:17:21.000000000 +0300
++++ compiz-0.8.8-b/src/screen.c	2020-05-10 21:10:08.406852002 +0300
+@@ -4003,8 +4003,7 @@
+     if (s->pendingCommands)
+     {
+ 	makeScreenCurrent (s);
+-	glFinish ();
+-
++	glFlush ();
+ 	s->pendingCommands = FALSE;
+     }
+ }
