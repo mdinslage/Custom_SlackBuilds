@@ -17,7 +17,14 @@ When you first run snes9x:
 - If the game audio is choppy or distorted, try setting the
   sound driver to Pulse or ALSA (Options -> Preferences -> Sound
   tab). Specifically, avoid SDL audio (unfortunately it's the default
-  if PULSE=no).
+  if PULSE=no).  Most importantly set your playback rate to match 
+  whatever you have set as your default sameple rate. If you don't
+  know what your soundcards sample rate is you can play an audio
+  file or a youtube video then in a terminal launch this command
+  to show you what your sample rate is.
+  watch -n1 cat /proc/asound/card?/pcm0p/sub0/hw_params
+  with ? being your soundcards position, 0,1,2,3 etc.
+  to find this information use aplay -l
 
 Notes:
 
