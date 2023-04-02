@@ -11,6 +11,6 @@ MD5SUM="53879c428f871e5e56d5a10dc24e4c10 \
         b3d17d652cde727629a68ff338881290"
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""
-REQUIRES=""
+REQUIRES="libminizip"
 MAINTAINER="M.Dinslage"
 EMAIL="matthewdinslage@gmail.com"
