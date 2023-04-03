@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Slackware build script for cwp
+# Slackware build script for compiz
 
 # Copyright 2014 Matt Dinslage (daedra1980@gmail.com), Springfield, MO, USA
 # All rights reserved.
@@ -87,7 +87,7 @@ done
 
 mkdir build
 cd build
-cmake .. \
+	cmake .. \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX="/usr" \
     -DCMAKE_INSTALL_LIBDIR="/usr/lib${LIBDIRSUFFIX}" \
