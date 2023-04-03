@@ -113,7 +113,7 @@ cd ../../
 case "$RETROARCH" in
   yes) build_ra=yes ;;
   no)  build_ra=no ;;
-  *)   if [ -x /usr/share/games/retroarch ]; then
+  *)   if [ -e /var/lib/pkgtools/packages/RetroArch* ]; then
          build_ra=yes
        else
          build_ra=no
