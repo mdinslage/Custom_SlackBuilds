@@ -1,0 +1,12 @@
+PRGNAM="dhewm3"
+VERSION="1.5.1"
+HOMEPAGE="https://github.com/dhewm/dhewm3"
+DOWNLOAD="https://github.com/dhewm/dhewm3/archive/1.5.1/dhewm3-1.5.1.tar.gz \
+          http://youfailit.net/pub/idgames/idstuff/doom3/linux/doom3-linux-1.3.1.1304.x86.run"
+MD5SUM="67386d9e9fe4bf604d8fead0f6371cc6 \
+        6325f0936f59420d33668754032141cb"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES="OpenAL"
+MAINTAINER="M.Dinslage"
+EMAIL="daedra1980@gmail.com"
