@@ -79,13 +79,13 @@ cd neo/build
   cmake \
     -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
     -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
-	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
-	-DCMAKE_INSTALL_DATADIR=/usr/share/games/dhewm3 \
-	-DD3XP=1 \
-	-DDEDICATED=1 \
-	-DCMAKE_INSTALL_BINDIR=/usr/games \
-	-DCMAKE_BUILD_TYPE=Release ..  
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
+    -DCMAKE_INSTALL_DATADIR=/usr/share/games/dhewm3 \
+    -DD3XP=1 \
+    -DDEDICATED=1 \
+    -DCMAKE_INSTALL_BINDIR=/usr/games \
+    -DCMAKE_BUILD_TYPE=Release ..  
 
   make $NUMJOBS VERBOSE=1
   make install DESTDIR=$PKG
