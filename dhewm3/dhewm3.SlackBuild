@@ -77,8 +77,8 @@ sed -i -e 's:\(${CMAKE_INSTALL_FULL_DATADIR}\)/dhewm3:\1:' neo/CMakeLists.txt
 mkdir -p neo/build
 cd neo/build
   cmake \
-  -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
-  -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
 	-DCMAKE_INSTALL_DATADIR=/usr/share/games/dhewm3 \
