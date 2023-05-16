@@ -1,0 +1,56 @@
+diff -up mint-themes/files/usr/share/themes/Mint-X/metacity-1/metacity-theme-3.xml.orig mint-themes/files/usr/share/themes/Mint-X/metacity-1/metacity-theme-3.xml
+--- mint-themes/files/usr/share/themes/Mint-X/metacity-1/metacity-theme-3.xml.orig	2018-12-15 06:13:20.000000000 -0600
++++ mint-themes/files/usr/share/themes/Mint-X/metacity-1/metacity-theme-3.xml	2020-08-14 22:58:50.383087986 -0500
+@@ -24,7 +24,7 @@
+ 
+ <!-- ::: GEOMETRY ::: -->
+ 
+-<frame_geometry name="normal" title_scale="medium" rounded_top_left="4" rounded_top_right="4">
++<frame_geometry name="normal" title_scale="medium" rounded_top_left="false" rounded_top_right="false">
+ 	<distance name="left_width" value="1" />
+ 	<distance name="right_width" value="1" />
+ 	<distance name="bottom_height" value="1" />
+@@ -113,11 +113,7 @@
+ 	<line color="C_border_focused" x1="0" y1="height-1" x2="width-1" y2="height-1" />
+ 	<line color="C_border_focused" x1="0" y1="4" x2="0" y2="height-2" />
+ 	<line color="C_border_focused" x1="width-1" y1="4" x2="width-1" y2="height-2" />
+-	<arc color="C_border_focused" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="C_border_focused" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
+-	<!-- double arcs for darker borders -->
+-	<arc color="C_border_focused" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="C_border_focused" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
++	<rectangle color="C_border_focused" x="0" y="0" width="width-1" height="height" />
+ </draw_ops>
+ 
+ <draw_ops name="rounded_border_unfocused">
+@@ -125,12 +121,11 @@
+ 	<line color="C_border_unfocused" x1="0" y1="height-1" x2="width-1" y2="height-1" />
+ 	<line color="C_border_unfocused" x1="0" y1="4" x2="0" y2="height-2" />
+ 	<line color="C_border_unfocused" x1="width-1" y1="4" x2="width-1" y2="height-2" />
+-	<arc color="C_border_unfocused" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="C_border_unfocused" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
+-
+-	<!-- double arcs for darker borders -->
+-	<arc color="C_border_unfocused" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="C_border_unfocused" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
++	<line color="C_border_focused" x1="4" y1="0" x2="width-5" y2="0" />
++	<line color="C_border_focused" x1="0" y1="height-1" x2="width-1" y2="height-1" />
++	<line color="C_border_focused" x1="0" y1="4" x2="0" y2="height-2" />
++	<line color="C_border_focused" x1="width-1" y1="4" x2="width-1" y2="height-2" />
++	<rectangle color="C_border_focused" x="0" y="0" width="width-1" height="height" />
+ </draw_ops>
+ 
+ <draw_ops name="border_tiled_left_focused">
+@@ -183,10 +178,8 @@
+ </draw_ops>
+ 
+ <draw_ops name="rounded_hilight">
+-	<line x1="5" y1="1" x2="width-6" y2="1" color="C_titlebar_focused_hilight" />
+-	<arc color="C_titlebar_focused_hilight" x="1" y="1" width="7" height="7"  start_angle="270" extent_angle="90" />
+-	<arc color="C_titlebar_focused_hilight" x="width-10" y="1" width="9" height="7"  start_angle="0" extent_angle="90" />
+-	<gradient type="vertical" x="1" y="5" width="1" height="height-9">
++	<line x1="0" y1="1" x2="0" y2="0" color="C_titlebar_focused_hilight" />
++	<gradient type="vertical" x="0" y="5" width="1" height="height-9">
+ 		<color value="C_titlebar_focused_hilight" />
+ 		<color value="blend/gtk:bg[NORMAL]/#000000/0.03" />
+ 	</gradient>

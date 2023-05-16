@@ -1,0 +1,193 @@
+diff -up mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/gnome-applications.css.orig mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/gnome-applications.css
+--- mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/gnome-applications.css.orig	2018-11-28 22:58:35.944000000 -0600
++++ mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/gnome-applications.css	2018-11-28 22:58:57.362000000 -0600
+@@ -9,14 +9,6 @@
+                             @toolbar_bg_a,
+                             @toolbar_bg_b);
+ }
+-/******************
+- * GtkFileChooser *
+- ******************/
+-
+-filechooser #pathbarbox {
+-    background-color: @theme_bg_color;
+-    border-bottom: 1px solid @border;
+-}
+ 
+ /************
+  * terminal *
+diff -up mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-main.css.orig mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-main.css
+--- mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-main.css.orig	2018-11-28 23:04:16.881000000 -0600
++++ mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-main.css	2018-11-28 23:05:06.925000000 -0600
+@@ -60,7 +60,7 @@
+ 
+ /* Menus */
+ 
+-@define-color menu_bg @theme_base_color;
++@define-color menu_bg @theme_bg_color;
+ @define-color menu_fg @theme_fg_color;
+ 
+ /* Notebooks */
+diff -up mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets-assets.css.orig mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets-assets.css
+--- mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets-assets.css.orig	2018-11-28 23:01:25.249000000 -0600
++++ mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets-assets.css	2018-11-28 23:02:18.465000000 -0600
+@@ -159,7 +159,19 @@ menuitem radio:checked:disabled {
+  * pane separator *
+  ******************/
+ 
+-paned.horizontal > separator.wide {
++paned > separator {
++    background-image: -gtk-scaled(url("assets/pane-separator-grip-vertical.png"), url("assets/pane-separator-grip-vertical@2.png"));
++    background-repeat: no-repeat;
++    background-position: center;
++}
++
++paned.vertical > separator {
++    background-image: -gtk-scaled(url("assets/pane-separator-grip.png"), url("assets/pane-separator-grip@2.png"));
++    background-repeat: no-repeat;
++    background-position: center;
++}
++
++paned > separator.wide {
+     background-image: -gtk-scaled(url("assets/pane-separator-grip-vertical.png"), url("assets/pane-separator-grip-vertical@2.png"));
+     background-repeat: no-repeat;
+     background-position: center;
+diff -up mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets.css.orig mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets.css
+--- mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets.css.orig	2018-11-28 22:59:25.265000000 -0600
++++ mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/gtk-widgets.css	2018-11-28 23:06:09.508000000 -0600
+@@ -599,6 +599,34 @@ expander arrow:checked {
+     -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+ }
+ 
++/***************
++ * Filechooser *
++ ***************/
++
++filechooser #pathbarbox {
++    background-color: @theme_bg_color;
++    border-bottom: none;
++}
++
++filechooser > actionbar {
++    border-width: 0px 1px 1px 1px;
++}
++
++filechooser stack actionbar {
++    border-width: 0px 1px 1px 1px;
++}
++
++filechooser stack scrolledwindow {
++    border: 1px solid @border;
++    border-radius: 0px;
++}
++
++filechooser placessidebar.sidebar,
++filechooser placessidebar.sidebar:dir(ltr),
++filechooser placessidebar.sidebar:dir(rtl) {
++     border: 1px solid @border;
++}
++
+ /****************
+  * floating bar *
+  ****************/
+@@ -1599,13 +1627,11 @@ GtkOverlay.osd {
+  ******************/
+ 
+ paned > separator {
+-    min-width: 1px;
+-    min-height: 1px;
++    min-width: 5px;
++    min-height: 5px;
+     -gtk-icon-source: none;
+     border-style: none;
+     background-color: transparent;
+-    background-image: linear-gradient(to bottom, @border, @border);
+-    background-size: 1px 1px;
+ }
+ 
+ paned > separator.wide {
+@@ -1616,28 +1642,6 @@ paned > separator.wide {
+     background-color: transparent;
+ }
+ 
+-paned.horizontal > separator.wide {
+-    background-size: 2px 24px;
+-}
+-
+-paned.vertical > separator.wide {
+-    background-size: 24px 2px;
+-}
+-
+-paned.horizontal > separator {
+-    margin: 0 -3px 0 -3px;
+-    padding: 0 3px 0 3px;
+-    background-repeat: repeat-y;
+-    background-position: center;
+-}
+-
+-paned.vertical > separator {
+-    margin: -3px 0 -3px 0;
+-    padding: 3px 0 3px 0;
+-    background-repeat: repeat-x;
+-    background-position: center;
+-}
+-
+ /************
+  * popovers *
+  ************/
+@@ -2076,7 +2080,7 @@ undershoot.top {
+   background-color: transparent;
+   background-image: linear-gradient(to left, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%);
+   padding-top: 1px;
+-  background-size: 10px 1px;
++  background-size: 10px 0px;
+   background-repeat: repeat-x;
+   background-origin: content-box;
+   background-position: center top; }
+@@ -2085,7 +2089,7 @@ undershoot.bottom {
+   background-color: transparent;
+   background-image: linear-gradient(to left, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%);
+   padding-bottom: 1px;
+-  background-size: 10px 1px;
++  background-size: 10px 0px;
+   background-repeat: repeat-x;
+   background-origin: content-box;
+   background-position: center bottom; }
+@@ -2094,7 +2098,7 @@ undershoot.left {
+   background-color: transparent;
+   background-image: linear-gradient(to top, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%);
+   padding-left: 1px;
+-  background-size: 1px 10px;
++  background-size: 0px 10px;
+   background-repeat: repeat-y;
+   background-origin: content-box;
+   background-position: left center; }
+@@ -2103,7 +2107,7 @@ undershoot.right {
+   background-color: transparent;
+   background-image: linear-gradient(to top, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.2) 50%);
+   padding-right: 1px;
+-  background-size: 1px 10px;
++  background-size: 0px 10px;
+   background-repeat: repeat-y;
+   background-origin: content-box;
+   background-position: right center; }
+diff -up mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/cinnamon-applications.css.orig mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/cinnamon-applications.css
+--- mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/cinnamon-applications.css.orig	2019-01-19 13:03:33.765000000 -0600
++++ mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/cinnamon-applications.css	2019-01-19 13:04:04.070000000 -0600
+@@ -1,5 +1,5 @@
+ @define-color nemo_sidebar_bg #505050;
+-@define-color nemo_sidebar_fg #dadada;
++@define-color nemo_sidebar_fg #fff;
+ @define-color nemo_sidebar_selected_fg #fff;
+ 
+ /********
+diff -up mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/mate-applications.css.orig mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/mate-applications.css
+--- mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/mate-applications.css.orig	2019-01-19 13:04:14.717000000 -0600
++++ mint-themes/src/Mint-X/theme/Mint-X/gtk-3.0/apps/mate-applications.css	2019-01-19 13:04:23.821000000 -0600
+@@ -1,5 +1,5 @@
+ @define-color caja_sidebar_bg #505050;
+-@define-color caja_sidebar_fg #dadada;
++@define-color caja_sidebar_fg #fff;
+ @define-color caja_sidebar_selected_fg #fff;
+ 
+ /****************

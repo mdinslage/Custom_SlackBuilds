@@ -1,0 +1,72 @@
+diff -up files/usr/share/themes/Mint-X/metacity-1/metacity-theme-2.xml.orig files/usr/share/themes/Mint-X/metacity-1/metacity-theme-2.xml
+--- files/usr/share/themes/Mint-X/metacity-1/metacity-theme-2.xml.orig	2018-07-28 20:15:00.008947582 -0500
++++ files/usr/share/themes/Mint-X/metacity-1/metacity-theme-2.xml	2018-07-28 20:15:39.314947582 -0500
+@@ -9,7 +9,7 @@
+ </info>
+ 
+ <!-- ::: GEOMETRY ::: -->
+-<frame_geometry name="normal" rounded_top_left="4" rounded_top_right="4" rounded_bottom_left="false" rounded_bottom_right="false">
++<frame_geometry name="normal" rounded_top_left="false" rounded_top_right="false" rounded_bottom_left="false" rounded_bottom_right="false">
+ 	<distance name="left_width" value="3"/>
+ 	<distance name="right_width" value="3"/>
+ 	<distance name="bottom_height" value="3"/>
+@@ -21,7 +21,7 @@
+ 	<border name="button_border" left="1" right="1" top="3" bottom="0"/>
+ </frame_geometry>
+ 
+-<frame_geometry name="shaded" parent="normal" rounded_top_left="4" rounded_top_right="4" rounded_bottom_left="false" rounded_bottom_right="false"/>
++<frame_geometry name="shaded" parent="normal" rounded_top_left="false" rounded_top_right="false" rounded_bottom_left="false" rounded_bottom_right="false"/>
+ 
+ <frame_geometry name="normal_maximized" parent="normal" rounded_top_left="false" rounded_top_right="false" rounded_bottom_left="false" rounded_bottom_right="false">
+ 	<!-- strip frame spacing off the normal geometry when maximised -->
+@@ -64,32 +64,18 @@
+ 
+ <!-- ::: BORDER OUTLINE ::: -->
+ <draw_ops name="border">
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="4" y1="0" x2="width-5" y2="0"/>
+-	<line color="shade/gtk:bg[NORMAL]/1.18" x1="5" y1="1" x2="width-6" y2="1"/>
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="4" x2="0" y2="height-1"/>
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="width-1" y1="4" x2="width-1" y2="height-1"/>
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="height-1" x2="width" y2="height-1"/>
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
+-	<arc color="shade/gtk:bg[NORMAL]/1.18" x="1" y="1" width="7" height="7"  start_angle="270" extent_angle="90" />
+-	<arc color="shade/gtk:bg[NORMAL]/1.18" x="width-10" y="1" width="9" height="7"  start_angle="0" extent_angle="90" />
+-	
+-	<!-- double arcs for darker borders -->
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="0" x2="width-1" y2="0"/>
++	<line color="shade/gtk:bg[NORMAL]/1.18" x1="0" y1="1" x2="width-1" y2="1"/>
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="1" x2="0" y2="height-1"/>
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="width-1" y1="1" x2="width-1" y2="height-1"/>
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="height-1" x2="width-0" y2="height-1"/>
+ </draw_ops>
+ 
+ <draw_ops name="border_unfocused">
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="4" y1="0" x2="width-5" y2="0"/>
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="4" x2="0" y2="height-1"/>
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="width-1" y1="4" x2="width-1" y2="height-1"/>
+-	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="height-1" x2="width" y2="height-1"/>
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
+-	
+-	<!-- double arcs for darker borders -->
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="0" y="0" width="9" height="9"  start_angle="270" extent_angle="90" />
+-	<arc color="shade/gtk:bg[NORMAL]/0.66" x="width-10" y="0" width="9" height="9"  start_angle="0" extent_angle="90" />
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="0" x2="width-1" y2="0"/>
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="1" x2="0" y2="height-1"/>
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="width-1" y1="1" x2="width-1" y2="height-1"/>
++	<line color="shade/gtk:bg[NORMAL]/0.66" x1="0" y1="height-1" x2="width-0" y2="height-1"/>
+ </draw_ops>
+ 
+ <draw_ops name="maxed_border">
+@@ -101,7 +87,7 @@
+ 
+ <draw_ops name="titlebar_gradient">
+ 	<rectangle color="gtk:bg[NORMAL]" x="0" y="0" width="width" height="height" filled="true"/>
+-	<gradient type="vertical" x="0" y="0" width="width" height="top_height+1">
++	<gradient type="vertical" x="0" y="0" width="width" height="22">
+ 		<color value="shade/gtk:bg[NORMAL]/1.08"/>
+ 		<color value="shade/gtk:bg[NORMAL]/1.0"/>
+ 	</gradient>
