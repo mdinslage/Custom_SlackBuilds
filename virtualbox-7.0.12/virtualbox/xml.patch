@@ -1,0 +1,43 @@
+From ad65d1cbd8a577c300a6db1e3abfff99088a17d4 Mon Sep 17 00:00:00 2001
+From: Valery Sinelnikov <greh@altlinux.org>
+Date: Thu, 21 Dec 2023 18:59:24 +0400
+Subject: [PATCH 1/1] Fixed type conversion
+
+---
+ VirtualBox/src/VBox/Runtime/r3/xml.cpp |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/VirtualBox/src/VBox/Runtime/r3/xml.cpp b/VirtualBox/src/VBox/Runtime/r3/xml.cpp
+index a666176..74165ae 100644
+--- a/VirtualBox/src/VBox/Runtime/r3/xml.cpp
++++ b/VirtualBox/src/VBox/Runtime/r3/xml.cpp
+@@ -1870,7 +1870,7 @@ XmlParserBase::XmlParserBase()
+         throw std::bad_alloc();
+     /* per-thread so it must be here */
+     xmlSetGenericErrorFunc(NULL, xmlParserBaseGenericError);
+-    xmlSetStructuredErrorFunc(NULL, xmlParserBaseStructuredError);
++    xmlSetStructuredErrorFunc(NULL, reinterpret_cast<xmlStructuredErrorFunc>(xmlParserBaseStructuredError));
+ }
+ 
+ XmlParserBase::~XmlParserBase()
+@@ -1931,7 +1931,7 @@ void XmlMemParser::read(const void *pvBuf, size_t cbSize,
+                                                   pcszFilename,
+                                                   NULL,       // encoding = auto
+                                                   options)))
+-        throw XmlError(xmlCtxtGetLastError(m_ctxt));
++        throw XmlError(const_cast<xmlErrorPtr>(xmlCtxtGetLastError(m_ctxt)));
+ 
+     doc.refreshInternals();
+ }
+@@ -2191,7 +2191,7 @@ void XmlFileParser::read(const RTCString &strFilename,
+                                               pcszFilename,
+                                               NULL,       // encoding = auto
+                                               options)))
+-        throw XmlError(xmlCtxtGetLastError(m_ctxt));
++        throw XmlError(const_cast<xmlErrorPtr>(xmlCtxtGetLastError(m_ctxt)));
+ 
+     doc.refreshInternals();
+ }
+-- 
+1.7.3.3
+
