@@ -101,6 +101,8 @@ zcat $CWD/vboxdrv.sh-setup.diff.gz | patch -d src/VBox/Installer/linux --verbose
 
 # Fix wrong path to rdesktop-vrdp-keymaps
 #zcat $CWD/006-rdesktop-vrdp-keymap-path.patch.gz | patch -p1 --verbose || exit 1
+
+# Fix compiling with newer libxml2
 patch -p2 < $CWD/xml.patch
 
 # Skip python2 detection
