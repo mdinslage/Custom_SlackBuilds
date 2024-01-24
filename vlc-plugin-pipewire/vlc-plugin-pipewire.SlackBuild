@@ -46,38 +46,21 @@ if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
   exit 0
 fi
 
-SRCDIR=$(cd $(dirname $0); pwd)
+# Exit the script on errors:
+set -e
+trap 'echo "$0 FAILED at line ${LINENO}" | tee $OUTPUT/error-${PRGNAM}.log' ERR
 
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-SOURCE="$SRCDIR/${PRGNAM}-${VERSION}.tar.xz"
+SOURCE="$CWD/${PRGNAM}-${VERSION}.tar.xz"
 SRCURL="https://www.remlab.net/files/vlc-plugin-pipewire/${PRGNAM}-${VERSION}.tar.xz"
 
-# Source file availability:
-if ! [ -f ${SOURCE} ]; then
-  echo "Source '$(basename ${SOURCE})' not available yet..."
-  # Check if the $SRCDIR is writable at all - if not, download to $OUTPUT
-  [ -w "$SRCDIR" ] || SOURCE="$OUTPUT/$(basename $SOURCE)"
-  if [ -f ${SOURCE} ]; then echo "Ah, found it!"; fi
-  if ! [ "x${SRCURL}" == "x" ]; then
-    echo "Will download file to $(dirname $SOURCE)"
-    wget --no-check-certificate -nv -T 20 -O "${SOURCE}" "${SRCURL}" || true
-    if [ $? -ne 0 -o ! -s "${SOURCE}" ]; then
-      echo "Downloading '$(basename ${SOURCE})' failed... aborting the build."
-      mv -f "${SOURCE}" "${SOURCE}".FAIL
-      exit 1
-    fi
-  else
-    echo "File '$(basename ${SOURCE})' not available... aborting the build."
-    exit 1
-  fi
-fi
-
-if [ "$P1" == "--download" ]; then
-  echo "Download complete."
-  exit 0
+# Add the following if-else statement
+if [ ! -e "$SOURCE" ]; then
+  echo "Source $PRGNAM-$VERSION not available yet. Downloading..."
+  wget --no-check-certificate -nv -T 20 -O "$SOURCE" "$SRCURL" || { echo "Failed to download $PRGNAM-$VERSION"; exit 1; }
 fi
 
 if [ "$ARCH" = "i586" ]; then
@@ -93,8 +76,6 @@ else
   SLKCFLAGS="-O2"
   LIBDIRSUFFIX=""
 fi
-
-set -e
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
