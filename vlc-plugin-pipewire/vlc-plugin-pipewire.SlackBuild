@@ -52,7 +52,7 @@ TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-SOURCE="$SRCDIR/${PRGNAM}-${VERSION}.tar.gz"
+SOURCE="$SRCDIR/${PRGNAM}-${VERSION}.tar.xz"
 SRCURL="https://www.remlab.net/files/vlc-plugin-pipewire/${PRGNAM}-${VERSION}.tar.xz"
 
 # Source file availability:
@@ -100,7 +100,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
+tar xvf $CWD/$PRGNAM-$VERSION.tar.xz
 cd $PRGNAM-$VERSION
 chown -R root:root .
 find -L . \
