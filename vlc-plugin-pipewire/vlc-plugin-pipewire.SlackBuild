@@ -57,7 +57,7 @@ OUTPUT=${OUTPUT:-/tmp}
 SOURCE="$CWD/${PRGNAM}-${VERSION}.tar.xz"
 SRCURL="https://www.remlab.net/files/vlc-plugin-pipewire/${PRGNAM}-${VERSION}.tar.xz"
 
-# Add the following if-else statement
+# Get the source
 if [ ! -e "$SOURCE" ]; then
   echo "Source $PRGNAM-$VERSION not available yet. Downloading..."
   wget --no-check-certificate -nv -T 20 -O "$SOURCE" "$SRCURL" || { echo "Failed to download $PRGNAM-$VERSION"; exit 1; }
