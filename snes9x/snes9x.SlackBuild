@@ -169,7 +169,7 @@ make
 popd
 
 #install non-gui binary
-install -Dm 755 unix/snes9x -t $PKG/usr/bin
+install -Dm 755 unix/snes9x -t $PKG/usr/games
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
 
