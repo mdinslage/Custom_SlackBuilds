@@ -88,16 +88,26 @@ tar xvf $CWD/glslang-$GLSLANG_VERSION.tar.gz -C external/glslang --strip-compone
 tar xvf $CWD/SPIRV-Cross-$SPIRV_CROSS_VERSION.tar.gz -C external/SPIRV-Cross --strip-components=1
 tar xvf $CWD/Vulkan-Headers-$VULKAN_HEADERS_VERSION.tar.gz -C external/vulkan-headers --strip-components=1
 
+# Fix building on -current as of 06_14_2024
+patch -p1 < $CWD/minizip.patch
+patch -p1 < $CWD/vulkan_fixes.patch
+patch -p1 < $CWD/slang_fix_CI_build.patch
+
+SLKCFLAGS+=" -DNDEBUG"
 mkdir -p gtk/build
 cd gtk/build
-  cmake -G Ninja .. \
+  cmake \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_BINDIR=games \
     -DUSE_PORTAUDIO=OFF \
-    -DUSE_SLANG=ON \
-    -DCMAKE_BUILD_TYPE=Release 
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA install
-cd ../../
+    -DCMAKE_INSTALL_DATAROOTDIR=share \
+    -DUSE_SYSTEMZIP=OFF \
+    -DCMAKE_BUILD_TYPE=Release ..
+  make VERBOSE=1
+  make install/strip DESTDIR=$PKG
+cd -
 
 # RetroArch support, contributed by orbea (Hunter Sezen).
 # Note that the source here is self-contained, there's no build-time
@@ -154,7 +164,6 @@ pushd unix
   --enable-gzip \
   --enable-screenshot \
   --enable-zip \
-  --with-system-zip \
   --build=$ARCH-slackware-linux
 make
 popd
