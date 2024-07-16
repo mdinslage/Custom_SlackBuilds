@@ -27,7 +27,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=virtualbox-extension-pack
-VERSION=${VERSION:-7.0.18}
+VERSION=${VERSION:-$(echo Oracle_VM_*.vbox-extpack | cut -d- -f2- | cut -d '.' -f1-3)}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
