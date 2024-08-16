@@ -66,11 +66,6 @@ for i in $CWD/patches/*.patch ; do
   patch -p1 < $i
 done
 
-#patch -p1 < $CWD/GnuPG-2.4.patch
-#patch -p1 < $CWD/seahorse-ssh-return-type.patch
-#patch -p1 < $CWD/avoid_C99_incompatibility_around_seahorse_pkcs11_backend_initialize.patch 
-#patch -p1 < $CWD/refactor_ssh_key_parsing.patch
-
 mkdir build
 cd build
   CFLAGS="$SLKCFLAGS" \
