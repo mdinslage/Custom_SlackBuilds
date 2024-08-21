@@ -68,6 +68,9 @@ else
   LIBDIRSUFFIX=""
 fi
 
+# GCC 14 "fix":
+SLKCFLAGS="$SLKCFLAGS -Wno-error=implicit-function-declaration"
+
 TMP=${TMP:-/tmp}
 PKG=$TMP/package-$PKGNAM
 
@@ -86,11 +89,14 @@ find . \
   \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
   -exec chmod 644 {} \+
 
+# Fix for libxml2-2.12:
+zcat $CWD/175.patch.gz | patch -p1 --verbose || exit 1
+
+patch -p1 < $CWD/nvidia_tearing-2.patch
+
 if [ ! -r configure ]; then
   NOCONFIGURE=1 ./autogen.sh
 fi
-
-patch -p1 < $CWD/nvidia_tearing-2.patch
 
 # Configure, build, and install:
 CFLAGS="$SLKCFLAGS" \

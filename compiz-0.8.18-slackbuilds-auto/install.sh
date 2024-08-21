@@ -18,7 +18,6 @@ cd compiz
 for dir in \
 	compiz \
 	compiz-bcop \
-	protobuf3 \
 	libcompizconfig \
 	compizconfig-python \
 	ccsm \
