@@ -1,0 +1,20 @@
+diff -up snes9x-1.63/vulkan/vulkan_context.cpp.orig snes9x-1.63/vulkan/vulkan_context.cpp
+--- snes9x-1.63/vulkan/vulkan_context.cpp.orig	2024-09-05 01:12:37.135747000 -0500
++++ snes9x-1.63/vulkan/vulkan_context.cpp	2024-09-05 01:13:08.614747000 -0500
+@@ -2,6 +2,7 @@
+ #include <vector>
+ #include <string>
+ #include "vulkan_context.hpp"
++#include <cassert>
+ 
+ namespace Vulkan
+ {
+@@ -233,7 +234,7 @@ bool Context::init_device(int preferred_
+         physical_device = device_list[preferred_device];
+     }
+ 
+-    if (physical_device == nullptr)
++    if (physical_device == vk::PhysicalDevice())
+     {
+         for (auto &device : device_list)
+         {

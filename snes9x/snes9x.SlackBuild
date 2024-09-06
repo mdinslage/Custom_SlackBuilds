@@ -26,7 +26,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=snes9x
-VERSION=${VERSION:-1.62.3}
+VERSION=${VERSION:-1.63}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -88,10 +88,10 @@ tar xvf $CWD/glslang-$GLSLANG_VERSION.tar.gz -C external/glslang --strip-compone
 tar xvf $CWD/SPIRV-Cross-$SPIRV_CROSS_VERSION.tar.gz -C external/SPIRV-Cross --strip-components=1
 tar xvf $CWD/Vulkan-Headers-$VULKAN_HEADERS_VERSION.tar.gz -C external/vulkan-headers --strip-components=1
 
-# Fix building on -current as of 06_14_2024
-patch -p1 < $CWD/minizip.patch
-patch -p1 < $CWD/vulkan_fixes.patch
-patch -p1 < $CWD/slang_fix_CI_build.patch
+# Fix building on -current and 32bit
+for i in $CWD/patches/* ; do 
+  patch -p1 < "$i"
+done
 
 SLKCFLAGS+=" -DNDEBUG"
 mkdir -p gtk/build
@@ -123,11 +123,16 @@ cd -
 case "$RETROARCH" in
   yes) build_ra=yes ;;
   no)  build_ra=no ;;
-  *)   if [ -e /var/lib/pkgtools/packages/RetroArch* ]; then
-         build_ra=yes
-       else
-         build_ra=no
-       fi ;;
+  *)
+    for file in /var/lib/pkgtools/packages/RetroArch*; do
+      if [ -e "$file" ]; then
+        build_ra=yes
+        break
+      else
+        build_ra=no
+      fi
+    done
+    ;;
 esac
 
 if [ "$build_ra" = "yes" ]; then
