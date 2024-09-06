@@ -32,7 +32,7 @@ TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
 
 SPIRV_CROSS_VERSION=2021-01-15
-VULKAN_HEADERS_VERSION=1.3.246
+VULKAN_HEADERS_VERSION="1.3.280"
 GLSLANG_VERSION=12.1.0
 
 if [ -z "$ARCH" ]; then
@@ -88,10 +88,8 @@ tar xvf $CWD/glslang-$GLSLANG_VERSION.tar.gz -C external/glslang --strip-compone
 tar xvf $CWD/SPIRV-Cross-$SPIRV_CROSS_VERSION.tar.gz -C external/SPIRV-Cross --strip-components=1
 tar xvf $CWD/Vulkan-Headers-$VULKAN_HEADERS_VERSION.tar.gz -C external/vulkan-headers --strip-components=1
 
-# Fix building on -current and 32bit
-for i in $CWD/patches/* ; do 
-  patch -p1 < "$i"
-done
+# Fix building on 32bit
+patch -p1 < $CWD/fix-32bit-build.diff
 
 SLKCFLAGS+=" -DNDEBUG"
 mkdir -p gtk/build
