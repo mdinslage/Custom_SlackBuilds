@@ -2,7 +2,7 @@
 
 # Slackware build script for compiz
 
-# Copyright 2014 Matt Dinslage (daedra1980@gmail.com), Springfield, MO, USA
+# Copyright 2021 Matt Dinslage (daedra1980@gmail.com), Springfield, MO, USA
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -23,7 +23,7 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=compiz
-VERSION=0.9.14.2
+VERSION=0.9.14.2_$(git ls-remote git://git.launchpad.net/compiz | awk '{print substr($0,0,7)}' | head -n 1)
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
@@ -36,14 +36,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-if [ ! -f "$PRGNAM-$VERSION.tar.xz" ]; then
-    echo ""
-    echo -e "\033[1;32m============================================\e[0m"
-    echo -e "\033[1;32m=======\033[0m\033[1;32m create source from launchpad =======\033[0m"
-    echo -e "\033[1;32m============================================\e[0m"
-    echo ""
-    git clone https://git.launchpad.net/ubuntu/+source/compiz $PRGNAM-$VERSION 
-    tar czvf $PRGNAM-$VERSION.tar.xz $PRGNAM-$VERSION # we dont really need to do this but it looks nice
+if [ ! -f "$PRGNAM-$VERSION.tar.gz" ]; then
+    git clone git://git.launchpad.net/compiz $PRGNAM-$VERSION 
+    tar czvf $PRGNAM-$VERSION.tar.gz $PRGNAM-$VERSION # we dont really need to do this but it looks nice
 	rm -r $PRGNAM-$VERSION # dont need to keep this around either
 fi
 
@@ -72,7 +67,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 rm -rf $TMP/$PRGNAM-$VERSION
 cd $TMP
-tar xvf $CWD/$PRGNAM-$VERSION.tar.xz
+tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 chown -R root:root .
 find -L . \
@@ -87,11 +82,11 @@ done
 
 mkdir build
 cd build
-cmake .. \
+	cmake .. \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_INSTALL_PREFIX="/usr" \
     -DCMAKE_INSTALL_LIBDIR="/usr/lib${LIBDIRSUFFIX}" \
-    -DCOMPIZ_DISABLE_SCHEMAS_INSTALL=On \
+    -DCOMPIZ_DISABLE_SCHEMAS_INSTALL=Off \
     -DCOMPIZ_BUILD_WITH_RPATH=Off \
     -DCOMPIZ_PACKAGING_ENABLED=On \
     -DBUILD_GTK=On \
@@ -101,18 +96,19 @@ cmake .. \
     -DCOMPIZ_WERROR=Off \
     -DCOMPIZ_DEFAULT_PLUGINS="composite,opengl,decor,resize,place,move,compiztoolbox,staticswitcher,regex,animation,wall,ccp"
 
-  make $NUMJOBS
+  make $NUMJOBS VERBOSE=1
   make install VERBOSE=1 DESTDIR=$PKG
 cd ..
 
-# findcompiz_install needs COMPIZ_DESTDIR and install needs DESTDIR
-# make findcompiz_install
+# Fix broken shebang in ccsm script to use the correct Python 3 interpreter
+sed -i '1s|^#!python|#!/usr/bin/python3|' "$PKG/usr/bin/ccsm"
+
 CMAKE_DIR=$(cmake --system-information | grep '^CMAKE_ROOT' | awk -F\" '{print $2}')
 install -dm755 "$PKG/${CMAKE_DIR}/Modules/"
 install -m644 cmake/FindCompiz.cmake "$PKG/${CMAKE_DIR}/Modules/"
 
-mkdir -p $PKG/usr/share/glib-2.0/schemas/
-cp build/generated/glib-2.0/schemas/*.xml $PKG/usr/share/glib-2.0/schemas/
+#mkdir -p $PKG/usr/share/glib-2.0/schemas/
+#cp build/generated/glib-2.0/schemas/*.xml $PKG/usr/share/glib-2.0/schemas/
 
 find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
