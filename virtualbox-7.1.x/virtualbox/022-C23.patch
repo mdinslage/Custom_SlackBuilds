@@ -1,0 +1,15 @@
+--- a/include/iprt/types.h
++++ b/include/iprt/types.h
+@@ -281,8 +281,12 @@
+      typedef _Bool bool;
+ #   endif
+ #  else
++#if __STDC_VERSION__ > 202300l
++#   include <stdbool.h>
++#else
+ #   undef bool /* see above netbsd explanation */
+ typedef _Bool bool;
++#endif
+ #  endif
+ # else
+ #  if RT_MSC_PREREQ(RT_MSC_VER_VC120)

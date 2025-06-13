@@ -113,6 +113,9 @@ sed -i 's|python2.7 python2.6 ||' ./configure
 # Use our CFLAGS
 sed -i "s|CXX_FLAGS=\"\"|CXX_FLAGS=\"$SLKCFLAGS -std=c++11\"|" ./configure
 
+# Fix compile with GCC-15. Thank You arch Linux for the patch
+patch -p1 < $CWD/022-C23.patch
+
 bash ./configure \
   --disable-kmods \
   --enable-vde \
