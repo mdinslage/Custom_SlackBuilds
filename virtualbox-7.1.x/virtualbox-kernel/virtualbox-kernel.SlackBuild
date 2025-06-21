@@ -72,7 +72,9 @@ find . \
 # Fix compatibility with 5.18.x
 sed -i "s|netif_rx_ni|netif_rx|g" vboxnetflt/linux/VBoxNetFlt-linux.c
 
-make KERN_DIR=${KERNELPATH} || exit 1
+# Temporary workaround for kernel 6.15+: disable objtool to avoid UACCESS build errors.
+# Replace with upstream patch when VirtualBox updates kernel module compatibility.
+make KERN_DIR=${KERNELPATH} objtool=true KCFLAGS="-Wno-error" || exit 1
 
 mkdir -p $PKG/lib/modules/$KERNEL/misc
 install -m 0644 vboxdrv.ko $PKG/lib/modules/$KERNEL/misc/
