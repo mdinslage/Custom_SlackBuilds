@@ -142,6 +142,9 @@ for i in vboxdrv.sh vboxballoonctrl-service.sh vboxautostart-service.sh; do
   sed -i "s/\[ -z \"\$DEBIAN\"/#\[ -z \"\$DEBIAN\"/" $PKG/etc/rc.d/rc.$SCRIPT.new
 done
 
+# Remove broken Secure Boot warning block that calls undefined function kernel_requires_module_signature
+sed -i '/kernel_requires_module_signature/,+8d' $PKG/etc/rc.d/rc.vboxdrv.new
+
 cp -f $CWD/vbox.cfg $PKG/etc/vbox/vbox.cfg.new
 sed -i "s|LIBDIR|lib$LIBDIRSUFFIX|" $PKG/etc/vbox/vbox.cfg.new
 cp -f $CWD/virtualbox.default $PKG/etc/default/virtualbox.new
