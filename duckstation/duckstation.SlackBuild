@@ -1,0 +1,151 @@
+#!/bin/sh
+
+# Slackware build script for duckstation (AppImage)
+# Maintainer: Your Name <you@example.org>
+
+PRGNAM=duckstation
+VERSION=${VERSION:-0.1_latest}
+BUILD=${BUILD:-1}
+TAG=${TAG:-}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+
+ARCH=${ARCH:-x86_64}
+if [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  echo "$PRGNAM is only provided as an x86_64 AppImage."
+  exit 1
+fi
+
+APPIMAGE="$CWD/DuckStation-x64.AppImage"
+SHAFILE="$CWD/DuckStation-x64.AppImage.sha256"
+LATEST_URL="https://github.com/stenzek/duckstation/releases/download/latest/DuckStation-x64.AppImage"
+ASSET_META_URL="https://github.com/stenzek/duckstation/releases/expanded_assets/latest"
+
+###############################################
+# Check remote/local SHA256 and download only #
+# if needed                                   #
+###############################################
+
+echo "Checking remote DuckStation-x64.AppImage SHA256..."
+
+REMOTE_SHA=$(
+  wget -qO- "$ASSET_META_URL" \
+    | grep -A1 'DuckStation-x64.AppImage' \
+    | sed -n 's/.*sha256:\([a-f0-9]\{64\}\).*/\1/p' \
+    | head -n1
+)
+
+if [ -z "$REMOTE_SHA" ]; then
+  echo "Warning: could not determine remote SHA256. Will download AppImage unconditionally."
+fi
+
+LOCAL_SHA=""
+if [ -f "$APPIMAGE" ] && [ -f "$SHAFILE" ]; then
+  LOCAL_SHA=$(head -n1 "$SHAFILE" | awk '{print $1}')
+fi
+
+if [ -n "$REMOTE_SHA" ] && [ -n "$LOCAL_SHA" ] && [ "$REMOTE_SHA" = "$LOCAL_SHA" ]; then
+  echo "Local AppImage is already up to date (sha256=$LOCAL_SHA)."
+  echo "Nothing to do. Exiting."
+  exit 0
+fi
+
+echo "Downloading DuckStation-x64.AppImage..."
+wget -q -O "$APPIMAGE" "$LATEST_URL"
+
+if [ ! -s "$APPIMAGE" ]; then
+  echo "Error: Failed to download AppImage."
+  exit 1
+fi
+
+# Compute and store local SHA256
+LOCAL_SHA=$(sha256sum "$APPIMAGE" | awk '{print $1}')
+echo "$LOCAL_SHA" > "$SHAFILE"
+echo "Saved local SHA256: $LOCAL_SHA"
+
+echo "Proceeding with package build..."
+
+set -e
+
+rm -rf "$PKG"
+mkdir -p "$TMP" "$PKG" "$OUTPUT"
+cd "$TMP"
+rm -rf ${PRGNAM}-${VERSION}
+mkdir -p ${PRGNAM}-${VERSION}
+cd ${PRGNAM}-${VERSION}
+
+##############################
+# Install AppImage into /opt #
+##############################
+
+mkdir -p "$PKG/opt/$PRGNAM"
+install -m 0755 "$APPIMAGE" "$PKG/opt/$PRGNAM/DuckStation-x64.AppImage"
+
+###########################
+# Create wrapper in PATH  #
+###########################
+
+mkdir -p "$PKG/usr/bin"
+cat << 'EOF' > "$PKG/usr/bin/duckstation"
+#!/bin/sh
+exec /opt/duckstation/DuckStation-x64.AppImage "$@"
+EOF
+chmod 0755 "$PKG/usr/bin/duckstation"
+
+#################################
+# Create .desktop entry inline  #
+#################################
+
+mkdir -p "$PKG/usr/share/applications"
+
+cat << 'EOF' > "$PKG/usr/share/applications/duckstation.desktop"
+[Desktop Entry]
+Type=Application
+Name=DuckStation
+Comment=PlayStation 1 emulator
+Exec=duckstation
+Icon=duckstation
+Terminal=false
+Categories=Game;Emulator;
+EOF
+
+##############
+# Install icon
+##############
+
+# Install scalable SVG icon
+mkdir -p "$PKG/usr/share/icons/hicolor/scalable/apps"
+install -m 0644 "$CWD/Logo_Duckstation.svg" \
+  "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg"
+
+# Add application icons in multiple sizes
+for i in 16 24 32 48 64 96 128 256; do
+  mkdir -p "$PKG/usr/share/icons/hicolor/${i}x${i}/apps"
+  convert -background none \
+    "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg" -resize "${i}x${i}" \
+    "$PKG/usr/share/icons/hicolor/${i}x${i}/apps/duckstation.png"
+done
+
+###############################
+# Docs
+###############################
+
+mkdir -p "$PKG/usr/doc/$PRGNAM-$VERSION"
+cp -a "$CWD/slack-desc" "$PKG/usr/doc/$PRGNAM-$VERSION/"
+
+mkdir -p "$PKG/install"
+cat "$CWD/slack-desc" > "$PKG/install/slack-desc"
+cat "$CWD/doinst.sh"   > "$PKG/install/doinst.sh"
+
+#################################
+# Build the package
+#################################
+
+cd "$PKG"
+/sbin/makepkg -l y -c n "$OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz"
