@@ -1,0 +1,109 @@
+#!/bin/sh
+
+# Slackware build script for pcsx2 (AppImage)
+# Maintainer: M.Dinslage
+
+PRGNAM=pcsx2
+VERSION=${VERSION:-2.5.317}
+BUILD=${BUILD:-1}
+TAG=${TAG:-}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+
+ARCH=${ARCH:-x86_64}
+if [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  echo "$PRGNAM is only provided as an x86_64 AppImage."
+  exit 1
+fi
+
+APPIMAGE="$CWD/pcsx2-v$VERSION-linux-appimage-x64-Qt.AppImage"
+DOWNLOAD_URL="https://github.com/PCSX2/pcsx2/releases/download/v$VERSION/pcsx2-v$VERSION-linux-appimage-x64-Qt.AppImage"
+ICON_SRC="$CWD/PCSX2_logo4.png"
+
+# If the AppImage doesn't exist locally, download it
+if [ ! -f "$APPIMAGE" ]; then
+  echo "AppImage not found, downloading:"
+  echo "  $DOWNLOAD_URL"
+  wget -O "$APPIMAGE" "$DOWNLOAD_URL"
+  if [ ! -s "$APPIMAGE" ]; then
+    echo "Error: download failed or file is empty."
+    exit 1
+  fi
+fi
+
+set -e
+
+rm -rf "$PKG"
+mkdir -p "$TMP" "$PKG" "$OUTPUT"
+cd "$TMP"
+rm -rf ${PRGNAM}-${VERSION}
+mkdir -p ${PRGNAM}-${VERSION}
+cd ${PRGNAM}-${VERSION}
+
+##############################
+# Install AppImage into /opt #
+##############################
+
+mkdir -p "$PKG/opt/$PRGNAM"
+# Install to a stable name so wrapper doesn't need versioning
+install -m 0755 "$APPIMAGE" "$PKG/opt/$PRGNAM/pcsx2.AppImage"
+
+###########################
+# Create wrapper in PATH  #
+###########################
+
+mkdir -p "$PKG/usr/bin"
+cat << 'EOF' > "$PKG/usr/bin/pcsx2"
+#!/bin/sh
+exec /opt/pcsx2/pcsx2.AppImage "$@"
+EOF
+chmod 0755 "$PKG/usr/bin/pcsx2"
+
+#################################
+# Create .desktop entry inline  #
+#################################
+
+mkdir -p "$PKG/usr/share/applications"
+
+cat << 'EOF' > "$PKG/usr/share/applications/pcsx2.desktop"
+[Desktop Entry]
+Type=Application
+Name=PCSX2
+Comment=PlayStation 2 emulator
+Exec=pcsx2
+Icon=PCSX2
+Terminal=false
+Categories=Game;Emulator;
+EOF
+
+#############################
+# Install icon (PNG, pixmaps)
+#############################
+
+mkdir -p "$PKG/usr/share/pixmaps"
+# Rename PCSX2_logo4.png -> PCSX2.png in the package
+install -m 0644 "$ICON_SRC" "$PKG/usr/share/pixmaps/PCSX2.png"
+
+###############################
+# Docs
+###############################
+
+mkdir -p "$PKG/usr/doc/$PRGNAM-$VERSION"
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+
+mkdir -p "$PKG/install"
+cat "$CWD/slack-desc" > "$PKG/install/slack-desc"
+cat "$CWD/doinst.sh"   > "$PKG/install/doinst.sh"
+
+#################################
+# Build the package
+#################################
+
+cd "$PKG"
+/sbin/makepkg -l y -c n "$OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz"
