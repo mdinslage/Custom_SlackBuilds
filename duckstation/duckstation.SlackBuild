@@ -124,12 +124,13 @@ mkdir -p "$PKG/usr/share/icons/hicolor/scalable/apps"
 install -m 0644 "$CWD/Logo_Duckstation.svg" \
   "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg"
 
-# Add application icons in multiple sizes
+# Add application icons in multiple sizes using rsvg-convert
 for i in 16 24 32 48 64 96 128 256; do
   mkdir -p "$PKG/usr/share/icons/hicolor/${i}x${i}/apps"
-  convert -background none \
-    "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg" -resize "${i}x${i}" \
-    "$PKG/usr/share/icons/hicolor/${i}x${i}/apps/duckstation.png"
+  rsvg-convert \
+    -w "$i" -h "$i" \
+    "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg" \
+    -o "$PKG/usr/share/icons/hicolor/${i}x${i}/apps/duckstation.png"
 done
 
 ###############################
