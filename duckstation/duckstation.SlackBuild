@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# Slackware build script for duckstation (AppImage)
+# Maintainer: daedra1980@gmail.com
+
+PRGNAM=duckstation
+VERSION=${VERSION:-0.1_11515}
+GITVERSION=${GITVERSION:-11515}
+BUILD=${BUILD:-1}
+TAG=${TAG:-}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/SBo}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+
+ARCH=${ARCH:-x86_64}
+if [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  echo "$PRGNAM is only provided as an x86_64 AppImage."
+  exit 1
+fi
+
+if [ ! -r "$CWD/DuckStation-x64.AppImage" ]; then
+  wget -P "$CWD" \
+    "https://github.com/stenzek/duckstation/releases/download/v0.1-$GITVERSION/DuckStation-x64.AppImage"
+fi
+
+set -e
+
+rm -rf "$PKG"
+mkdir -p "$TMP" "$PKG" "$OUTPUT"
+cd "$TMP"
+rm -rf ${PRGNAM}-${VERSION}
+mkdir -p ${PRGNAM}-${VERSION}
+cd ${PRGNAM}-${VERSION}
+
+##############################
+# Install AppImage into /opt #
+##############################
+
+mkdir -p "$PKG/opt/$PRGNAM"
+install -m 0755 $CWD/DuckStation-x64.AppImage "$PKG/opt/$PRGNAM/DuckStation-x64.AppImage"
+
+###########################
+# Create wrapper in PATH  #
+###########################
+
+mkdir -p "$PKG/usr/bin"
+cat << 'EOF' > "$PKG/usr/bin/duckstation"
+#!/bin/sh
+export FUSERMOUNT_PROG="${FUSERMOUNT_PROG:-/usr/bin/fusermount3}"
+exec /opt/duckstation/DuckStation-x64.AppImage "$@"
+EOF
+chmod 0755 "$PKG/usr/bin/duckstation"
+
+#################################
+# Create .desktop entry inline  #
+#################################
+
+mkdir -p "$PKG/usr/share/applications"
+
+cat << 'EOF' > "$PKG/usr/share/applications/duckstation.desktop"
+[Desktop Entry]
+Type=Application
+Name=DuckStation
+Comment=PlayStation 1 emulator
+Exec=duckstation
+Icon=duckstation
+Terminal=false
+Categories=Game;Emulator;
+EOF
+
+##############
+# Install icon
+##############
+
+# Install scalable SVG icon
+mkdir -p "$PKG/usr/share/icons/hicolor/scalable/apps"
+install -m 0644 "$CWD/Logo_Duckstation.svg" \
+  "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg"
+
+# Add application icons in multiple sizes using rsvg-convert
+for i in 16 24 32 48 64 96 128 256; do
+  mkdir -p "$PKG/usr/share/icons/hicolor/${i}x${i}/apps"
+  rsvg-convert \
+    -w "$i" -h "$i" \
+    "$PKG/usr/share/icons/hicolor/scalable/apps/duckstation.svg" \
+    -o "$PKG/usr/share/icons/hicolor/${i}x${i}/apps/duckstation.png"
+done
+
+###############################
+# Docs
+###############################
+
+mkdir -p "$PKG/usr/doc/$PRGNAM-$VERSION"
+cp -a "$CWD/slack-desc" "$PKG/usr/doc/$PRGNAM-$VERSION/"
+
+mkdir -p "$PKG/install"
+cat "$CWD/slack-desc" > "$PKG/install/slack-desc"
+cat "$CWD/doinst.sh"   > "$PKG/install/doinst.sh"
+
+#################################
+# Build the package
+#################################
+
+cd "$PKG"
+/sbin/makepkg -l y -c n "$OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz"
