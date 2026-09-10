@@ -1,0 +1,12 @@
+PRGNAM="makemkv"
+VERSION="1.18.4"
+HOMEPAGE="http://www.makemkv.com/"
+DOWNLOAD="http://www.makemkv.com/download/makemkv-oss-1.18.4.tar.gz \
+          http://www.makemkv.com/download/makemkv-bin-1.18.4.tar.gz"
+MD5SUM="d595bf1421a43f80246909df460468fe \
+        7b13939edcb1e621136233d17f72072c"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES=""
+MAINTAINER="M.Dinslage"
+EMAIL="daedra1980@gmail.com"
